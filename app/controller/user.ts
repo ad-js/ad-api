@@ -9,10 +9,12 @@ export default class UserController extends Controller {
     const { ctx } = this;
     const { username, password } = ctx.request.query;
 
-    const getVal = ['id', 'username', 'role'];
-    const sql = `select ${getVal.join()} from user_list where username="${username}" and password="${password}"`;
-
-    const result: any = await this.app.mysql.query(sql);
+    const result: any = await this.app.mysql.select('user_list', {
+      where: { username, password },
+      columns: ['id', 'username', 'role'],
+      limit: 10,
+      offset: 0,
+    });
 
     if (result.length) {
       ctx.body = success({
